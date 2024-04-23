@@ -46,6 +46,9 @@ class ListingController extends Controller
             'pictures.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             // Note: 'pictures' validation can still occur here, but it's not included in the $formFields
         ]);
+
+        // Remove 'pictures' from form fields before saving if it exists
+        unset($formFields['pictures']);
     
         $formFields['user_id'] = auth()->id();
     
