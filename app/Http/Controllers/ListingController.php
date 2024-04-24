@@ -6,6 +6,7 @@ use App\Models\Listing;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class ListingController extends Controller
 {
@@ -43,7 +44,7 @@ class ListingController extends Controller
             'email' => ['required', 'email'],
             'tags' => 'required',
             'description' => 'required',
-            'pictures.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'pictures.*' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             // Note: 'pictures' validation can still occur here, but it's not included in the $formFields
         ]);
 
@@ -63,6 +64,7 @@ class ListingController extends Controller
                 $listing->images()->create(['image_path' => $path]);
             }
         }
+
     
         return redirect('/')->with('message', 'Listing created successfully!');
     }
@@ -75,35 +77,54 @@ class ListingController extends Controller
     }
 
     // Update Listing Data
-   public function update(Request $request, Listing $listing)
-{
-    if ($listing->user_id != auth()->id()) {
-        abort(403, 'Unauthorized Action');
+    public function update(Request $request, Listing $listing) {
+        if ($listing->user_id != auth()->id()) {
+            abort(403, 'Unauthorized Action');
+        }
+    
+        $formFields = $request->validate([
+            'title' => 'required',
+            'company' => 'required',
+            'location' => 'required',
+            'website' => 'required',
+            'email' => ['required', 'email'],
+            'tags' => 'required',
+            'description' => 'required',
+            'pictures.*' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+         // Remove 'pictures' from form fields before saving if it exists
+         unset($formFields['pictures']);
+    
+         $formFields['user_id'] = auth()->id();
+
+
+        // Update the listing with other fields
+        $listing->update($formFields);
+    
+        // Handle deletions of images
+        if ($request->has('delete_images')) {
+            foreach ($request->input('delete_images') as $imageId) {
+                $image = $listing->images()->find($imageId);
+                if ($image) {
+                    Storage::delete($image->image_path);
+                    $image->delete();
+                }
+            }
+        }
+    
+        // Handle new image uploads
+        if ($request->hasFile('pictures')) {
+            foreach ($request->file('pictures') as $file) {
+                $path = $file->store('pictures', 'public');
+                $listing->images()->create(['image_path' => $path]);
+            }
+        }
+    
+    
+        return back()->with('message', 'Listing updated successfully!');
     }
-
-    Log::info('Updating listing', ['user_id' => auth()->id(), 'listing_id' => $listing->id]);
-
-    $formFields = $request->validate([
-        'title' => 'required',
-        'company' => 'required',
-        'location' => 'required',
-        'website' => 'required',
-        'email' => ['required', 'email'],
-        'tags' => 'required',
-        'description' => 'required',
-    ]);
-
-    $listing->update($formFields);
-
-    if ($request->hasFile('pictures')) {
-        $pictures = $request->file('pictures');
-        // Handle updating of pictures similarly to store, possibly removing old ones if that's desired behavior
-        // Again, you would use a dedicated method for this, e.g., ImageController::updateImages($pictures, $listing->id);
-    }
-
-    return back()->with('message', 'Listing updated successfully!');
-}
-
+    
     // Delete Listing
     public function destroy(Listing $listing)
     {
