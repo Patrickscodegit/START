@@ -64,9 +64,8 @@ class ListingController extends Controller
                 $listing->images()->create(['image_path' => $path]);
             }
         }
-
     
-        return redirect('/')->with('message', 'Listing created successfully!');
+        return redirect()->route('listings.show', $listing->id)->with('message', 'Listing created successfully!');
     }
     
 
@@ -121,8 +120,7 @@ class ListingController extends Controller
             }
         }
     
-    
-        return back()->with('message', 'Listing updated successfully!');
+        return redirect()->route('listings.show', $listing->id)->with('message', 'Listing updated successfully!');
     }
     
     // Delete Listing
@@ -132,9 +130,13 @@ class ListingController extends Controller
             abort(403, 'Unauthorized Action');
         }
 
-        $listing->delete();
-        return redirect('/')->with('message', 'Listing deleted successfully');
+        if ($listing->delete()) {
+            return redirect()->route('listings.index')->with('message', 'Listing deleted successfully');
+        } else {
+            return back()->with('error', 'Unable to delete listing');
+        }
     }
+    
 
     // Manage Listings
 
