@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Gate;
 
 class ListingController extends Controller
 {
@@ -140,7 +141,15 @@ class ListingController extends Controller
     // Manage Listings
 
     public function manage()
-{
-    return view('listings.manage', ['listings' => Listing::latest()->where('user_id', auth()->id())->paginate(4)]);
-}
+    {
+        if (Gate::allows('viewAny', Listing::class)) {
+            // Admin user, fetch all listings
+            $listings = Listing::latest()->paginate(4);
+        } else {
+            // Regular user, fetch listings based on user ID
+            $listings = Listing::latest()->where('user_id', auth()->id())->paginate(4);
+        }
+    
+        return view('listings.manage', compact('listings'));
+    }
 }
