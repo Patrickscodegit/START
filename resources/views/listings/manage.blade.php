@@ -54,12 +54,6 @@
 
                         </tbody>
                     </table>
-
-                 <!-- Pagination Links -->
-        <div class="mt-6">
-            {{ $listings->links() }}
-        </div>
-        
                 </x-card>
             </x-layout>
 

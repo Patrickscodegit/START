@@ -141,16 +141,15 @@ class ListingController extends Controller
     // Manage Listings
 
     public function manage()
-{
-    if (Gate::allows('viewAny', Listing::class)) {
-        // Admin user, fetch all listings with pagination
-        $listings = Listing::latest()->paginate(5); // Adjust the number of listings per page as needed
-    } else {
-        // Regular user, fetch listings based on user ID with pagination
-        $listings = Listing::latest()->where('user_id', auth()->id())->paginate(5); // Adjust the number of listings per page as needed
+    {
+        if (Gate::allows('viewAny', Listing::class)) {
+            // Admin user, fetch all listings
+            $listings = Listing::latest()->paginate(4);
+        } else {
+            // Regular user, fetch listings based on user ID
+            $listings = Listing::latest()->where('user_id', auth()->id())->paginate(4);
+        }
+    
+        return view('listings.manage', compact('listings'));
     }
-
-    return view('listings.manage', compact('listings'));
-}
-
 }
