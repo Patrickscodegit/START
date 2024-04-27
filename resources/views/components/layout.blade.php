@@ -13,19 +13,15 @@
             referrerpolicy="no-referrer"
         />
         <script src="//unpkg.com/alpinejs" defer></script>
-        <script src="https://cdn.tailwindcss.com"></script>
-        <script>
-            tailwind.config = {
-                theme: {
-                    extend: {
-                        colors: {
-                            laravel: "#ef3b2d",
-                        },
-                    },
-                },
-            };
-        </script>
+        <link rel="stylesheet" href="/css/app.css">
+     
+
+
+
+        
+          
         <title>Hollandico Bv | Find luxury cars</title>
+        @vite('resources/css/app.css')
     </head>
     <body class="mb-48">
         <nav class="flex justify-between items-center mb-4">
@@ -72,7 +68,7 @@
         </main>
 
         <footer
-            class="fixed bottom-0 left-0 w-full flex items-center justify-start font-bold bg-laravel text-white h-24 mt-24 opacity-90 md:justify-center"
+            class="fixed bottom-0 left-0 w-full flex items-center justify-start font-bold bg-red-600 text-white h-24 mt-24 opacity-90 md:justify-center"
         >
             <p class="ml-2">Copyright &copy; 2024, All Rights reserved</p>
 
