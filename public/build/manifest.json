@@ -20,17 +20,17 @@
     "src": "node_modules/lightgallery/images/loading.gif"
   },
   "resources/css/app.css": {
-    "file": "assets/app-Cz90LaY2.css",
+    "file": "assets/app-_fro3ZvQ.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-DI2So29W.js",
+    "file": "assets/app-DmRTEOC5.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
     "css": [
-      "assets/app-Cz90LaY2.css"
+      "assets/app-_fro3ZvQ.css"
     ]
   },
   "resources/js/gallery.js": {

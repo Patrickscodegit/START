@@ -19,11 +19,18 @@ Route::delete('/images/{image}', [ImageController::class, 'destroy'])->middlewar
 Route::post('/listings/{listingId}/images', [ImageController::class, 'store'])->middleware('auth')->name('images.store');
 
 // User Authentication
+Route::put('/users/{id}', [UserController::class, 'update'])->middleware('auth')->name('users.update');
+
 Route::get('/register', [UserController::class, 'create'])->middleware('guest')->name('register');
 Route::post('/users', [UserController::class, 'store'])->name('users.store');
 Route::get('/login', [UserController::class, 'login'])->name('login')->middleware('guest');
 Route::post('/users/authenticate', [UserController::class, 'authenticate'])->name('users.authenticate');
 Route::post('/logout', [UserController::class, 'logout'])->middleware('auth')->name('logout');
+Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
+Route::get('/users/{id}/edit', [UserController::class, 'edit'])->middleware('auth')->name('users.edit');
+
+
+
 
 // Dashboard
 Route::middleware([

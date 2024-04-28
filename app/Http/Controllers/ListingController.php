@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Listing;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Gate;
 
@@ -13,11 +12,19 @@ class ListingController extends Controller
 {
     // Show all listings
     public function index()
-    {
-        return view('listings.index', [
-            'listings' => Listing::latest()->filter(request(['tag', 'search']))->paginate(4),
-        ]);
-    }
+{
+    // Fetch distinct companies or brands from listings
+    $brands = Listing::select('company')->distinct()->pluck('company');
+    // Fetch distinct locations from listings
+    $locations = Listing::select('location')->distinct()->pluck('location');
+
+    return view('listings.index', [
+        'listings' => Listing::latest()
+                             ->filter(request(['tag', 'search', 'company', 'location']))
+                             ->paginate(4),
+    ]);
+}
+
 
     // Show single listing
     public function show(Listing $listing)

@@ -10,19 +10,34 @@ class Listing extends Model
     use HasFactory;
 
     protected $fillable = ['title', 'company', 'location', 'website', 'email', 'description', 'tags'];
-
+    
     public function scopeFilter($query, array $filters)
     {
-        if($filters['tag'] ?? false) {
-            $query->where('tags', 'like', '%' . request('tag') . '%');
+        // Filter by tag
+        if (!empty($filters['tag'])) {
+            $query->where('tags', 'like', '%' . $filters['tag'] . '%');
         }
-
-        if($filters['search'] ?? false) {
-            $query->where('title', 'like', '%' . request('search') . '%')
-                ->orWhere('description', 'like', '%' . request('search') . '%')
-                ->orWhere('tags', 'like', '%' . request('search') . '%');
-            }
+    
+        // Filter by search query that applies to title, description, or tags
+        if (!empty($filters['search'])) {
+            $query->where(function ($subQuery) use ($filters) {
+                $subQuery->where('title', 'like', '%' . $filters['search'] . '%')
+                         ->orWhere('description', 'like', '%' . $filters['search'] . '%')
+                         ->orWhere('tags', 'like', '%' . $filters['search'] . '%');
+            });
+        }
+    
+        // Filter by company
+        if (!empty($filters['company'])) {
+            $query->where('company', 'like', '%' . $filters['company'] . '%');
+        }
+    
+        // Filter by location
+        if (!empty($filters['location'])) {
+            $query->where('location', 'like', '%' . $filters['location'] . '%');
+        }
     }
+    
 
     // Relationship To User
     public function user () {

@@ -21,6 +21,15 @@
             <li>
                 <span class="font-bold uppercase">Welcome {{ auth()->user()->name }}</span>
             </li>
+          
+            <li>
+                <a href="{{ route('users.show', ['id' => auth()->id()]) }}" class="hover:text-laravel">
+                    <i class="fa-solid fa-gear"></i> Manage Account
+                </a>
+            </li>
+       
+        
+            
             <li>
                 <a href="/listings/manage" class="hover:text-laravel">
                     <i class="fa-solid fa-gear"></i> Manage Listings
