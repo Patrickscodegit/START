@@ -16,6 +16,7 @@
         "vite": "^5.0.0"
     },
     "dependencies": {
-        "@tailwindcss/cli": "^0.1.2"
+        "@tailwindcss/cli": "^0.1.2",
+        "lightgallery": "^2.7.2"
     }
 }
